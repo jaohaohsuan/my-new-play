@@ -6,6 +6,7 @@
 GET     /                           controllers.Application.index
 POST    /test2                      controllers.Application.test4
 GET     /test2                      controllers.Application.test3
+POST    /recIndex                   controllers.Application.test5
 
 
 # Map static resources from the /public folder to the /assets URL path

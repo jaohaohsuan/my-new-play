@@ -50,12 +50,10 @@ object Application extends Controller with MongoController {
 
   def test3 = Action {
     val json = Json.obj("name" -> "Henry", "birth" -> new DateTime())
-
     Ok(json)
   }
 
   def test4 = Action.async(parse.json) { request =>
-
     val transformer = (__ \ 'start).json.update(
       of[JsNumber].map {
         case JsNumber(n) => Json.obj("$date" -> n.toLong)
@@ -67,5 +65,18 @@ object Application extends Controller with MongoController {
         Created
       }
     }.getOrElse(Future.successful(BadRequest("invalid json")))
+  }
+
+  def test5 = Action.async(parse.json) { request =>
+
+    val dateRead = of[JsString].map { case JsString(s) => Json.obj("$date" -> new DateTime(s).getMillis)}
+    val transformer = (__ \ 'startTime).json.update(dateRead) andThen (__ \ 'endTime).json.update(dateRead)
+
+    request.body.transform(transformer).map { result =>
+      collection.insert(result).map { lastError =>
+        Logger.debug(s"Successfully inserted with LastError: $lastError")
+        Created
+      }
+    }.getOrElse(Future.successful(BadRequest))
   }
 }
