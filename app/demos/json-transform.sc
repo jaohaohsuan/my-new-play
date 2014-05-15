@@ -253,7 +253,8 @@ object data {
         "feed after midnight" -> "becomes gremlin"
       )
     ),
-    "loves" -> "all"
+    "loves" -> "all",
+    "whatever" -> "i don't care"
   )
 }
 
